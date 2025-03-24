@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Дополнительные стили (опционально): */
+
+body {
+  @apply bg-white text-gray-900 font-sans antialiased;
+}
+
+input {
+  @apply rounded border border-gray-300 focus:ring focus:ring-blue-300 focus:outline-none;
+}
+
+button {
+  @apply transition hover:brightness-110 active:scale-95;
+}
