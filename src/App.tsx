@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const CHARSET =
   'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -162,10 +162,12 @@ export default function App() {
       {compressed && (
         <div className='bg-gray-100 p-4 rounded space-y-2'>
           <div>
-            <strong>Сжатая строка:</strong> {compressed}
+            <strong>Сжатая строка:</strong> 
+            <div className='break-all'>{compressed}</div>
           </div>
           <div>
-            <strong>Десериализовано:</strong> {JSON.stringify(decompressed)}
+            <strong>Десериализовано:</strong>
+            <div className='break-all max-h-[200px] overflow-y-auto'>{JSON.stringify(decompressed)}</div>
           </div>
           <div>
             <strong>Коэффициент сжатия:</strong> {ratio.toFixed(1)}%
