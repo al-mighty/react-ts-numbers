@@ -143,10 +143,10 @@ export default function App() {
           100 случайных
         </button>
         <button
-          onClick={() => handleGenerate(500)}
+          onClick={() => handleGenerate(300)}
           className='bg-green-600 text-white px-3 py-2 rounded'
         >
-          500 случайных
+          00 случайных
         </button>
 
         {compressed && (
