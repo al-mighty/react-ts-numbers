@@ -4,54 +4,37 @@ const CHARSET =
   'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 function serialize(nums: number[]): string {
-  const bitmask = new Array(300).fill(0);
-  for (const num of nums) {
-    if (num >= 1 && num <= 300) {
-      bitmask[num - 1] = 1;
-    }
-  }
+  if (nums.length === 0) return '';
 
-  let result = '';
-  for (let i = 0; i < 300; i += 6) {
-    const chunk = bitmask.slice(i, i + 6);
-    const value = parseInt(chunk.join(''), 2);
-    result += CHARSET[value];
-  }
-
-  return result;
+  // Сортируем и удаляем дубликаты
+  const uniqueNums = [...new Set(nums)].sort((a, b) => a - b);
+  
+  // Преобразуем в строку с разделителями
+  return uniqueNums
+    .map(n => n.toString(36)) // используем base36 для более короткой записи
+    .join(',');
 }
 
 function deserialize(str: string): number[] {
-  const nums: number[] = [];
-  for (let i = 0; i < str.length; i++) {
-    const value = CHARSET.indexOf(str[i]);
-    for (let bit = 0; bit < 6; bit++) {
-      if ((value >> (5 - bit)) & 1) {
-        const number = i * 6 + bit + 1;
-        if (number <= 300) {
-          nums.push(number);
-        }
-      }
-    }
-  }
-  return nums;
+  if (!str) return [];
+  
+  // Преобразуем обратно в числа
+  return str
+    .split(',')
+    .map(n => parseInt(n, 36))
+    .filter(n => n > 0 && n <= 300);
 }
 
 function generateRandomSet(count: number): number[] {
   const numbers: number[] = [];
-
-  // Сначала получаем максимум уникальных чисел
   const uniqueSet = new Set<number>();
-  while (uniqueSet.size < Math.min(count, 300)) {
+  
+  // Генерируем уникальные числа
+  while (uniqueSet.size < count) {
     uniqueSet.add(Math.floor(Math.random() * 300) + 1);
   }
+  
   numbers.push(...uniqueSet);
-
-  // Если нужно больше — добавим случайные дубли
-  while (numbers.length < count) {
-    numbers.push(numbers[Math.floor(Math.random() * uniqueSet.size)]);
-  }
-
   return numbers;
 }
 
@@ -75,14 +58,23 @@ export default function App() {
     const nums = input
       .split(',')
       .map(s => parseInt(s.trim()))
-      .filter(n => !isNaN(n));
+      .filter(n => !isNaN(n) && n > 0 && n <= 300);
+
+    console.log('Parsed numbers:', nums);
+    // Если массив пустой, не выполняем сжатие
+    if (nums.length === 0) {
+      setCompressed('');
+      setDecompressed([]);
+      setRatio(0);
+      return;
+    }
 
     const compressedStr = serialize(nums);
     const decompressedArr = deserialize(compressedStr);
 
     setCompressed(compressedStr);
     setDecompressed(decompressedArr);
-    setRatio((compressedStr.length / JSON.stringify(nums).length) * 100);
+    setRatio(nums.length > 0 ? (compressedStr.length / JSON.stringify(nums).length) * 100 : 0);
   };
 
   const handleGenerate = (count: number) => {
@@ -146,7 +138,7 @@ export default function App() {
           onClick={() => handleGenerate(300)}
           className='bg-green-600 text-white px-3 py-2 rounded'
         >
-          00 случайных
+          300 случайных
         </button>
 
         {compressed && (
@@ -158,12 +150,11 @@ export default function App() {
           </button>
         )}
       </div>
-
       {compressed && (
         <div className='bg-gray-100 p-4 rounded space-y-2'>
           <div>
             <strong>Сжатая строка:</strong> 
-            <div className='break-all'>{compressed}</div>
+            <div className='break-all whitespace-pre-wrap'>{compressed}</div>
           </div>
           <div>
             <strong>Десериализовано:</strong>
