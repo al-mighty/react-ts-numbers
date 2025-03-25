@@ -1,8 +1,5 @@
 import { useState } from 'react';
 
-const CHARSET =
-  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-
 function serialize(nums: number[]): string {
   if (nums.length === 0) return '';
 
