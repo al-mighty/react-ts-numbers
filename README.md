@@ -63,3 +63,17 @@ npm run deploy
 ## Демо
 
 Рабочая версия доступна по адресу: https://al-mighty.github.io/react-ts-numbers/ 
+
+## .gitignore
+
++ node_modules
++ dist
++ .DS_Store
++ *.log
++ .cache
++ coverage
++ .env
++ .env.local
++ .env.development.local
++ .env.test.local
++ .env.production.local
